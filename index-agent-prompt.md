@@ -14,12 +14,17 @@
 
 ## 자산 종류 판별
 
+> **경로 표기 주의**: diff에 나오는 파일 경로는 `common-repo` 저장소 **내부 기준**이라
+> `common-repo/` 접두사가 없다 (예: `backend/PageRequest.java`). 반면 `asset-index.json`에
+> 저장하는 `path` 필드는 항상 `common-repo/`를 붙인 전체 경로로 적는다 (예:
+> `common-repo/backend/PageRequest.java`). 아래 판별 기준은 diff 경로(접두사 없음) 기준이다.
+
 diff에 새로 추가된 파일이 다음 중 어디에 해당하는지 먼저 판별한다.
 
-| 종류 | 판별 기준 | 예 |
-|---|---|---|
-| `frontend-component` | `common-repo/components/*.tsx` | Button, Pagination |
-| `backend-module` | `common-repo/backend/*.java` | ApiResponse, GlobalExceptionHandler |
+| 종류 | diff상 경로 패턴 (접두사 없음) | index에 저장할 path | 예 |
+|---|---|---|---|
+| `frontend-component` | `components/*.tsx` | `common-repo/components/*.tsx` | Button, Pagination |
+| `backend-module` | `backend/*.java` | `common-repo/backend/*.java` | ApiResponse, GlobalExceptionHandler |
 
 둘 다 아닌 파일(설정 파일, 테스트 등)은 색인 대상이 아니다 — 무시한다.
 
@@ -33,6 +38,9 @@ diff에 새로 추가된 파일이 다음 중 어디에 해당하는지 먼저 �
    - `props`: interface/type에 정의된 prop 이름 목록
    - `purpose`: 파일 상단 주석이 있으면 그대로 사용, 없으면 props 구성으로 미루어 한 줄 요약 +
      ` (AI 추론)`
+   - `detail`: 코드 안의 **모든** 주석(문서화 주석, prop별 인라인 설명, 사용 예시, 주의사항 등)을
+     빠짐없이 모아 정리한 상세 설명. 여러 문장이어도 된다 — 개발자가 실제로 적어둔 내용만 담고,
+     없는 내용을 지어내지 않는다. `purpose` 한 줄 이상으로 코드에 적힌 게 없으면 `null`로 둔다.
 
    **backend-module인 경우**
    - `name`: public 클래스 이름
@@ -40,6 +48,9 @@ diff에 새로 추가된 파일이 다음 중 어디에 해당하는지 먼저 �
    - `usage`: 이 클래스를 다른 코드에서 어떻게 쓰는지 (public 메서드/생성자 시그니처 그대로, 최대 3개)
    - `purpose`: 클래스 상단 주석(Javadoc)이 있으면 그대로 사용, 없으면 클래스명·메서드 구성으로
      미루어 한 줄 요약 + ` (AI 추론)`
+   - `detail`: Javadoc의 설명 본문, `@param`/`@return`/`@throws`, 메서드별 인라인 주석, 예시 코드,
+     "주의"·"단" 같은 개발자의 당부까지 빠짐없이 모아 정리한 상세 설명. 개발자가 실제로 적어둔
+     내용만 담고, 코드에 그 이상의 설명이 없으면 `null`로 둔다.
 
 2. `asset-index.json`의 `assets` 배열에 새 항목을 추가한다. 이때:
    - `type`: 위 표의 값 (`frontend-component` 또는 `backend-module`)

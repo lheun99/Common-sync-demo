@@ -69,6 +69,20 @@
       ],
       "addedInCommit": "ac0e839",
       "addedAt": "2026-09-10T12:50:08+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "PageRequest",
+      "path": "common-repo/backend/PageRequest.java",
+      "purpose": "공통 페이지 요청 파라미터를 검증하고 기본값을 채워주는 유틸 클래스.",
+      "usage": [
+        "public static PageRequest of(int page, int size)",
+        "public int getOffset()",
+        "public int getPage()"
+      ],
+      "detail": "공통 페이지 요청 파라미터를 검증하고 기본값을 채워주는 유틸 클래스. 컨트롤러에서 매번 page/size 파라미터를 직접 검증하지 말고 이 클래스를 통해 생성한다. page는 1부터 시작하며, 0 이하로 들어오면 1로 보정한다. size는 최소 1, 최대 100으로 제한한다 — DB 부하 방지를 위해 100을 넘는 값은 강제로 100으로 잘린다. 사용 예시: PageRequest pr = PageRequest.of(requestPage, requestSize); int offset = pr.getOffset(); 주의: size에 음수를 넣으면 예외를 던지지 않고 기본값 20으로 대체한다. 호출부에서 별도 검증이 필요 없다. of(page, size): page는 요청받은 페이지 번호(1-base), size는 요청받은 페이지 크기, 반환값은 검증·보정이 끝난 PageRequest. getOffset(): DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다)",
+      "addedInCommit": "c55e533",
+      "addedAt": "2026-09-10T14:55:03+09:00"
     }
   ]
 }

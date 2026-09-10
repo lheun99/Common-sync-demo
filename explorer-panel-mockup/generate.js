@@ -226,6 +226,13 @@ const html = `<!doctype html>
       ? { label: "Props", items: a.props || [] }
       : { label: "Usage", items: a.usage || [] };
 
+    const detailHtml = a.detail
+      ? \`<div class="field">
+          <div class="label">자세한 설명 (코드 주석에서 추출)</div>
+          <div class="meta" style="font-size:13px;color:var(--ink);line-height:1.7;">\${escapeHtml(a.detail)}</div>
+        </div>\`
+      : "";
+
     document.getElementById("detail").innerHTML = \`
       <h1>\${a.name}</h1>
       <div class="path">\${a.path}</div>
@@ -234,6 +241,7 @@ const html = `<!doctype html>
         <div class="label">\${listField.label}</div>
         <div class="chip-row">\${listField.items.map(p => \`<span class="chip">\${p}</span>\`).join("") || "<span class=\\"meta\\">없음</span>"}</div>
       </div>
+      \${detailHtml}
       <div class="field">
         <div class="label">추가된 커밋</div>
         <div class="meta">\${a.addedInCommit} · \${a.addedAt}</div>

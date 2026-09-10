@@ -2,3 +2,6 @@
 [2026-09-10T12:45:50+09:00] commit 6e09a43 → index에 Textarea 추가함 (사람 개입 없음)
 [2026-09-10T12:50:08+09:00] commit ac0e839 → index에 ApiResponse(backend-module) 추가함 (사람 개입 없음)
 [2026-09-10T12:50:08+09:00] commit ac0e839 → index에 GlobalExceptionHandler(backend-module) 추가함 (사람 개입 없음)
+[2026-09-10T14:55:03+09:00] commit c55e533 → 판단 보류: PageRequest.java 경로가 backend/PageRequest.java로, backend-module 판별 기준인 common-repo/backend/*.java 패턴과 불일치(common-repo/ 프리픽스 없음)하여 색인에 추가하지 않음
+[2026-09-10T14:55:03+09:00] commit c55e533 → 지시서 수정(diff 경로는 common-repo/ 접두사 없음을 기준으로 판별) 반영해 재판별: backend/PageRequest.java는 backend-module 패턴과 일치
+[2026-09-10T14:55:03+09:00] commit c55e533 → index에 PageRequest(backend-module) 추가함 (사람 개입 없음)
