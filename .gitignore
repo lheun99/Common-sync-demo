@@ -1,2 +1,4 @@
 # (이전엔 common-repo가 이 폴더 안에 중첩돼 있어서 제외했었는데,
 #  이제 common-repo는 형제 폴더(../common-repo)로 분리돼서 더 이상 해당 없음)
+
+node_modules/
