@@ -8,7 +8,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_PATH = path.join(__dirname, "..", "asset-index.json");
 const OUT_PATH = path.join(__dirname, "index.html");
 
-const { assets } = JSON.parse(fs.readFileSync(INDEX_PATH, "utf-8"));
+const { assets: rawAssets } = JSON.parse(fs.readFileSync(INDEX_PATH, "utf-8"));
+
+// 각 자산의 실제 소스 코드를 읽어서 붙인다 (common-repo는 common-sync-demo의 형제 폴더)
+const assets = rawAssets.map((a) => {
+  const sourcePath = path.join(__dirname, "..", "..", a.path);
+  let source;
+  try {
+    source = fs.readFileSync(sourcePath, "utf-8");
+  } catch {
+    source = "(소스 파일을 찾을 수 없습니다: " + a.path + ")";
+  }
+  return { ...a, source };
+});
 
 const TYPE_LABEL = {
   "frontend-component": "프론트엔드 컴포넌트",
@@ -83,6 +95,11 @@ const html = `<!doctype html>
   .chip{background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:4px 10px;font-family:monospace;font-size:12px;}
   .meta{font-size:12.5px;color:var(--soft);}
   .empty{padding:40px;color:var(--soft);text-align:center;}
+  .code-block{
+    background:var(--panel);border:1px solid var(--edge);border-radius:8px;
+    padding:14px 16px;overflow-x:auto;font-family:'Consolas','Menlo',monospace;
+    font-size:12.5px;line-height:1.6;white-space:pre;
+  }
 </style>
 </head>
 <body>
@@ -96,6 +113,10 @@ const html = `<!doctype html>
 
 <script>
   const assets = ${JSON.stringify(assets, null, 2)};
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
 
   document.querySelectorAll(".asset").forEach((el) => {
     el.addEventListener("click", () => {
@@ -122,6 +143,10 @@ const html = `<!doctype html>
       <div class="field">
         <div class="label">추가된 커밋</div>
         <div class="meta">\${a.addedInCommit} · \${a.addedAt}</div>
+      </div>
+      <div class="field">
+        <div class="label">소스 코드</div>
+        <div class="code-block">\${escapeHtml(a.source)}</div>
       </div>
     \`;
   }

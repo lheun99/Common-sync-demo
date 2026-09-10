@@ -38,6 +38,11 @@
   .chip{background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:4px 10px;font-family:monospace;font-size:12px;}
   .meta{font-size:12.5px;color:var(--soft);}
   .empty{padding:40px;color:var(--soft);text-align:center;}
+  .code-block{
+    background:var(--panel);border:1px solid var(--edge);border-radius:8px;
+    padding:14px 16px;overflow-x:auto;font-family:'Consolas','Menlo',monospace;
+    font-size:12.5px;line-height:1.6;white-space:pre;
+  }
 </style>
 </head>
 <body>
@@ -106,7 +111,8 @@
       "onClick"
     ],
     "addedInCommit": "bfc1777",
-    "addedAt": "baseline"
+    "addedAt": "baseline",
+    "source": "interface ButtonProps {\n  label: string;\n  variant?: \"primary\" | \"secondary\" | \"danger\";\n  disabled?: boolean;\n  onClick?: () => void;\n}\n\nexport function Button({ label, variant = \"primary\", disabled, onClick }: ButtonProps) {\n  return (\n    <button className={`btn btn-${variant}`} disabled={disabled} onClick={onClick}>\n      {label}\n    </button>\n  );\n}\n"
   },
   {
     "type": "frontend-component",
@@ -121,7 +127,8 @@
       "onChange"
     ],
     "addedInCommit": "bfc1777",
-    "addedAt": "baseline"
+    "addedAt": "baseline",
+    "source": "interface InputProps {\n  label: string;\n  value: string;\n  placeholder?: string;\n  errorMessage?: string;\n  onChange?: (value: string) => void;\n}\n\nexport function Input({ label, value, placeholder, errorMessage, onChange }: InputProps) {\n  return (\n    <div className=\"field\">\n      <label>{label}</label>\n      <input\n        value={value}\n        placeholder={placeholder}\n        onChange={(e) => onChange?.(e.target.value)}\n      />\n      {errorMessage && <span className=\"error\">{errorMessage}</span>}\n    </div>\n  );\n}\n"
   },
   {
     "type": "frontend-component",
@@ -134,7 +141,8 @@
       "onRowClick"
     ],
     "addedInCommit": "bfc1777",
-    "addedAt": "baseline"
+    "addedAt": "baseline",
+    "source": "interface Column<T> {\n  key: keyof T;\n  header: string;\n}\n\ninterface TableProps<T> {\n  columns: Column<T>[];\n  rows: T[];\n  onRowClick?: (row: T) => void;\n}\n\nexport function Table<T extends { id: string | number }>({ columns, rows, onRowClick }: TableProps<T>) {\n  return (\n    <table>\n      <thead>\n        <tr>\n          {columns.map((c) => (\n            <th key={String(c.key)}>{c.header}</th>\n          ))}\n        </tr>\n      </thead>\n      <tbody>\n        {rows.map((row) => (\n          <tr key={row.id} onClick={() => onRowClick?.(row)}>\n            {columns.map((c) => (\n              <td key={String(c.key)}>{String(row[c.key])}</td>\n            ))}\n          </tr>\n        ))}\n      </tbody>\n    </table>\n  );\n}\n"
   },
   {
     "type": "frontend-component",
@@ -147,7 +155,8 @@
       "onChange"
     ],
     "addedInCommit": "370478a",
-    "addedAt": "2026-09-10T12:34:53+09:00"
+    "addedAt": "2026-09-10T12:34:53+09:00",
+    "source": "// 목록 하단 페이지 넘기기\ninterface PaginationProps {\n  page: number;\n  totalPages: number;\n  onChange: (page: number) => void;\n}\n\nexport function Pagination({ page, totalPages, onChange }: PaginationProps) {\n  return (\n    <div className=\"pagination\">\n      <button disabled={page <= 1} onClick={() => onChange(page - 1)}>\n        이전\n      </button>\n      <span>\n        {page} / {totalPages}\n      </span>\n      <button disabled={page >= totalPages} onClick={() => onChange(page + 1)}>\n        다음\n      </button>\n    </div>\n  );\n}\n"
   },
   {
     "type": "frontend-component",
@@ -163,7 +172,8 @@
       "onChange"
     ],
     "addedInCommit": "6e09a43",
-    "addedAt": "2026-09-10T12:45:50+09:00"
+    "addedAt": "2026-09-10T12:45:50+09:00",
+    "source": "// 여러 줄 텍스트 입력 (라벨/에러 메시지 포함)\ninterface TextareaProps {\n  label: string;\n  value: string;\n  placeholder?: string;\n  errorMessage?: string;\n  rows?: number;\n  onChange?: (value: string) => void;\n}\n\nexport function Textarea({ label, value, placeholder, errorMessage, rows = 4, onChange }: TextareaProps) {\n  return (\n    <div className=\"field\">\n      <label>{label}</label>\n      <textarea\n        value={value}\n        placeholder={placeholder}\n        rows={rows}\n        onChange={(e) => onChange?.(e.target.value)}\n      />\n      {errorMessage && <span className=\"error\">{errorMessage}</span>}\n    </div>\n  );\n}\n"
   },
   {
     "type": "backend-module",
@@ -176,7 +186,8 @@
       "public boolean isSuccess()"
     ],
     "addedInCommit": "ac0e839",
-    "addedAt": "2026-09-10T12:50:08+09:00"
+    "addedAt": "2026-09-10T12:50:08+09:00",
+    "source": "package com.company.common.response;\n\n/**\n * 공통 API 응답 포맷 (성공/실패를 통일된 형태로 감싼다)\n */\npublic class ApiResponse<T> {\n    private final boolean success;\n    private final T data;\n    private final String message;\n\n    private ApiResponse(boolean success, T data, String message) {\n        this.success = success;\n        this.data = data;\n        this.message = message;\n    }\n\n    public static <T> ApiResponse<T> success(T data) {\n        return new ApiResponse<>(true, data, null);\n    }\n\n    public static <T> ApiResponse<T> fail(String message) {\n        return new ApiResponse<>(false, null, message);\n    }\n\n    public boolean isSuccess() {\n        return success;\n    }\n\n    public T getData() {\n        return data;\n    }\n\n    public String getMessage() {\n        return message;\n    }\n}\n"
   },
   {
     "type": "backend-module",
@@ -188,9 +199,14 @@
       "public ApiResponse<Void> handleException(Exception e)"
     ],
     "addedInCommit": "ac0e839",
-    "addedAt": "2026-09-10T12:50:08+09:00"
+    "addedAt": "2026-09-10T12:50:08+09:00",
+    "source": "package com.company.common.exception;\n\nimport com.company.common.response.ApiResponse;\nimport org.springframework.web.bind.annotation.ExceptionHandler;\nimport org.springframework.web.bind.annotation.RestControllerAdvice;\n\n/**\n * 공통 예외 처리 (모든 컨트롤러에서 발생하는 예외를 한 곳에서 처리한다)\n */\n@RestControllerAdvice\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler(IllegalArgumentException.class)\n    public ApiResponse<Void> handleIllegalArgument(IllegalArgumentException e) {\n        return ApiResponse.fail(e.getMessage());\n    }\n\n    @ExceptionHandler(Exception.class)\n    public ApiResponse<Void> handleException(Exception e) {\n        return ApiResponse.fail(\"서버 오류가 발생했습니다.\");\n    }\n}\n"
   }
 ];
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
 
   document.querySelectorAll(".asset").forEach((el) => {
     el.addEventListener("click", () => {
@@ -217,6 +233,10 @@
       <div class="field">
         <div class="label">추가된 커밋</div>
         <div class="meta">${a.addedInCommit} · ${a.addedAt}</div>
+      </div>
+      <div class="field">
+        <div class="label">소스 코드</div>
+        <div class="code-block">${escapeHtml(a.source)}</div>
       </div>
     `;
   }
