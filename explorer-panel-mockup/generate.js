@@ -149,13 +149,18 @@ const html = `<!doctype html>
     return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  document.querySelectorAll(".asset").forEach((el) => {
-    el.addEventListener("click", () => {
-      document.querySelectorAll(".asset").forEach((e) => e.classList.remove("active"));
+  function selectAsset(idx) {
+    document.querySelectorAll(".asset").forEach((e) => e.classList.remove("active"));
+    const el = document.querySelector(\`.asset[data-idx="\${idx}"]\`);
+    if (el) {
       el.classList.add("active");
-      const idx = Number(el.dataset.idx);
-      render(assets[idx]);
-    });
+      el.scrollIntoView({ block: "nearest" });
+    }
+    render(assets[idx]);
+  }
+
+  document.querySelectorAll(".asset").forEach((el) => {
+    el.addEventListener("click", () => selectAsset(Number(el.dataset.idx)));
   });
 
   const askInput = document.getElementById("ask-input");
@@ -180,8 +185,29 @@ const html = `<!doctype html>
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || "알 수 없는 오류");
 
+      const related = (data.relatedAssetNames || [])
+        .map((name) => assets.find((a) => a.name.toLowerCase() === name.toLowerCase()))
+        .filter(Boolean);
+
+      const chipRow = related.length
+        ? \`<div class="chip-row" style="margin-top:8px;">\${related
+            .map((a) => \`<span class="chip asset-chip" data-idx="\${assets.indexOf(a)}" style="cursor:pointer;">\${escapeHtml(a.name)} 보기 →</span>\`)
+            .join("")}</div>\`
+        : "";
+
       askAnswer.className = "ask-answer";
-      askAnswer.innerHTML = \`<div class="q">Q. \${escapeHtml(question)}</div>\${escapeHtml(data.answer)}\`;
+      askAnswer.innerHTML = \`<div class="q">Q. \${escapeHtml(question)}</div>\${escapeHtml(data.answer)}\${chipRow}\`;
+
+      askAnswer.querySelectorAll(".asset-chip").forEach((chip) => {
+        chip.addEventListener("click", () => selectAsset(Number(chip.dataset.idx)));
+      });
+
+      document.querySelectorAll(".asset").forEach((e) => e.classList.remove("active"));
+      related.forEach((a) => {
+        const el = document.querySelector(\`.asset[data-idx="\${assets.indexOf(a)}"]\`);
+        if (el) el.classList.add("active");
+      });
+      if (related.length > 0) render(related[0]);
     } catch (err) {
       askAnswer.className = "ask-answer error";
       askAnswer.innerHTML = \`<div class="q">Q. \${escapeHtml(question)}</div>질문 서버에 연결할 수 없어요. ask-server가 켜져 있는지 확인해주세요. (\${escapeHtml(err.message)})\`;

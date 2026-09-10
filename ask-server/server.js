@@ -8,6 +8,19 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 8787;
 
+const ANSWER_SCHEMA = JSON.stringify({
+  type: "object",
+  properties: {
+    answer: { type: "string", description: "질문에 대한 한국어 답변, 3~4문장 이내" },
+    relatedAssetNames: {
+      type: "array",
+      items: { type: "string" },
+      description: "답변에서 언급한 공통 자산들의 정확한 이름 (색인의 name 필드와 동일하게). 없으면 빈 배열",
+    },
+  },
+  required: ["answer", "relatedAssetNames"],
+});
+
 function askClaude(question) {
   return new Promise((resolve, reject) => {
     const proc = spawn(
@@ -19,6 +32,8 @@ function askClaude(question) {
         "bypassPermissions",
         "--allowedTools",
         "mcp__common-asset-index__search_assets mcp__common-asset-index__get_asset_detail",
+        "--json-schema",
+        ANSWER_SCHEMA,
         "--output-format",
         "text",
       ],
@@ -30,8 +45,15 @@ function askClaude(question) {
     proc.stdout.on("data", (d) => (stdout += d));
     proc.stderr.on("data", (d) => (stderr += d));
     proc.on("close", (code) => {
-      if (code === 0) resolve(stdout.trim());
-      else reject(new Error(stderr.trim() || `claude 프로세스가 코드 ${code}로 종료됨`));
+      if (code !== 0) {
+        reject(new Error(stderr.trim() || `claude 프로세스가 코드 ${code}로 종료됨`));
+        return;
+      }
+      try {
+        resolve(JSON.parse(stdout.trim()));
+      } catch {
+        resolve({ answer: stdout.trim(), relatedAssetNames: [] });
+      }
     });
     proc.on("error", reject);
   });
@@ -60,10 +82,10 @@ const server = http.createServer((req, res) => {
           return;
         }
         console.log(`[질문] ${question}`);
-        const answer = await askClaude(question);
-        console.log(`[답변] ${answer.slice(0, 80)}...`);
+        const result = await askClaude(question);
+        console.log(`[답변] ${result.answer.slice(0, 80)}... (관련: ${result.relatedAssetNames.join(", ")})`);
         res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({ answer }));
+        res.end(JSON.stringify(result));
       } catch (err) {
         console.error(err);
         res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
