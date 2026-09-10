@@ -1,0 +1,10 @@
+{
+  "name": "index-mcp-server",
+  "version": "1.0.0",
+  "description": "asset-index.json을 조회 가능하게 노출하는 MCP 서버 (공통팀 배포 색인 다리)",
+  "type": "module",
+  "main": "server.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}
