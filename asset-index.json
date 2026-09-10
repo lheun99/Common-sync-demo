@@ -44,6 +44,31 @@
       "props": ["label", "value", "placeholder", "errorMessage", "rows", "onChange"],
       "addedInCommit": "6e09a43",
       "addedAt": "2026-09-10T12:45:50+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "ApiResponse",
+      "path": "common-repo/backend/ApiResponse.java",
+      "purpose": "공통 API 응답 포맷 (성공/실패를 통일된 형태로 감싼다)",
+      "usage": [
+        "public static <T> ApiResponse<T> success(T data)",
+        "public static <T> ApiResponse<T> fail(String message)",
+        "public boolean isSuccess()"
+      ],
+      "addedInCommit": "ac0e839",
+      "addedAt": "2026-09-10T12:50:08+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "GlobalExceptionHandler",
+      "path": "common-repo/backend/GlobalExceptionHandler.java",
+      "purpose": "공통 예외 처리 (모든 컨트롤러에서 발생하는 예외를 한 곳에서 처리한다)",
+      "usage": [
+        "public ApiResponse<Void> handleIllegalArgument(IllegalArgumentException e)",
+        "public ApiResponse<Void> handleException(Exception e)"
+      ],
+      "addedInCommit": "ac0e839",
+      "addedAt": "2026-09-10T12:50:08+09:00"
     }
   ]
 }
