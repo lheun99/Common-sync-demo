@@ -1,6 +1,7 @@
 {
-  "components": [
+  "assets": [
     {
+      "type": "frontend-component",
       "name": "Button",
       "path": "common-repo/components/Button.tsx",
       "purpose": "버튼 (primary/secondary/danger)",
@@ -9,6 +10,7 @@
       "addedAt": "baseline"
     },
     {
+      "type": "frontend-component",
       "name": "Input",
       "path": "common-repo/components/Input.tsx",
       "purpose": "텍스트 입력 (라벨/에러 메시지 포함)",
@@ -17,6 +19,7 @@
       "addedAt": "baseline"
     },
     {
+      "type": "frontend-component",
       "name": "Table",
       "path": "common-repo/components/Table.tsx",
       "purpose": "컬럼 정의 기반 데이터 테이블 (행 클릭 지원)",
@@ -25,6 +28,7 @@
       "addedAt": "baseline"
     },
     {
+      "type": "frontend-component",
       "name": "Pagination",
       "path": "common-repo/components/Pagination.tsx",
       "purpose": "목록 하단 페이지 넘기기",
@@ -33,6 +37,7 @@
       "addedAt": "2026-09-10T12:34:53+09:00"
     },
     {
+      "type": "frontend-component",
       "name": "Textarea",
       "path": "common-repo/components/Textarea.tsx",
       "purpose": "여러 줄 텍스트 입력 (라벨/에러 메시지 포함)",
