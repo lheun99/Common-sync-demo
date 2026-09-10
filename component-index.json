@@ -31,6 +31,14 @@
       "props": ["page", "totalPages", "onChange"],
       "addedInCommit": "370478a",
       "addedAt": "2026-09-10T12:34:53+09:00"
+    },
+    {
+      "name": "Textarea",
+      "path": "common-repo/components/Textarea.tsx",
+      "purpose": "여러 줄 텍스트 입력 (라벨/에러 메시지 포함)",
+      "props": ["label", "value", "placeholder", "errorMessage", "rows", "onChange"],
+      "addedInCommit": "6e09a43",
+      "addedAt": "2026-09-10T12:45:50+09:00"
     }
   ]
 }
