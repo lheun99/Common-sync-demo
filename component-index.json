@@ -1,0 +1,36 @@
+{
+  "components": [
+    {
+      "name": "Button",
+      "path": "common-repo/components/Button.tsx",
+      "purpose": "버튼 (primary/secondary/danger)",
+      "props": ["label", "variant", "disabled", "onClick"],
+      "addedInCommit": "bfc1777",
+      "addedAt": "baseline"
+    },
+    {
+      "name": "Input",
+      "path": "common-repo/components/Input.tsx",
+      "purpose": "텍스트 입력 (라벨/에러 메시지 포함)",
+      "props": ["label", "value", "placeholder", "errorMessage", "onChange"],
+      "addedInCommit": "bfc1777",
+      "addedAt": "baseline"
+    },
+    {
+      "name": "Table",
+      "path": "common-repo/components/Table.tsx",
+      "purpose": "컬럼 정의 기반 데이터 테이블 (행 클릭 지원)",
+      "props": ["columns", "rows", "onRowClick"],
+      "addedInCommit": "bfc1777",
+      "addedAt": "baseline"
+    },
+    {
+      "name": "Pagination",
+      "path": "common-repo/components/Pagination.tsx",
+      "purpose": "목록 하단 페이지 넘기기",
+      "props": ["page", "totalPages", "onChange"],
+      "addedInCommit": "370478a",
+      "addedAt": "2026-09-10T12:34:53+09:00"
+    }
+  ]
+}
