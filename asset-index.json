@@ -83,6 +83,48 @@
       "detail": "공통 페이지 요청 파라미터를 검증하고 기본값을 채워주는 유틸 클래스. 컨트롤러에서 매번 page/size 파라미터를 직접 검증하지 말고 이 클래스를 통해 생성한다. page는 1부터 시작하며, 0 이하로 들어오면 1로 보정한다. size는 최소 1, 최대 100으로 제한한다 — DB 부하 방지를 위해 100을 넘는 값은 강제로 100으로 잘린다. 사용 예시: PageRequest pr = PageRequest.of(requestPage, requestSize); int offset = pr.getOffset(); 주의: size에 음수를 넣으면 예외를 던지지 않고 기본값 20으로 대체한다. 호출부에서 별도 검증이 필요 없다. of(page, size): page는 요청받은 페이지 번호(1-base), size는 요청받은 페이지 크기, 반환값은 검증·보정이 끝난 PageRequest. getOffset(): DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다)",
       "addedInCommit": "c55e533",
       "addedAt": "2026-09-10T14:55:03+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "FileController",
+      "path": "common-repo/backend/FileController.java",
+      "purpose": "공통 파일 업로드/다운로드 API.",
+      "usage": [
+        "public FileController(FileStorageService fileStorageService)",
+        "public ApiResponse<FileUploadResult> upload(MultipartFile file)",
+        "public ResponseEntity<Resource> download(String storedFileName)"
+      ],
+      "detail": null,
+      "addedInCommit": "2eaa9e4",
+      "addedAt": "2026-09-10T15:20:35+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "FileStorageService",
+      "path": "common-repo/backend/FileStorageService.java",
+      "purpose": "로컬 디스크 기반 공통 파일 저장/조회 서비스.",
+      "usage": [
+        "public FileStorageService(String uploadDir)",
+        "public FileUploadResult store(MultipartFile file)",
+        "public Resource loadAsResource(String storedFileName)"
+      ],
+      "detail": "로컬 디스크 기반 공통 파일 저장/조회 서비스. 업로드된 파일은 원본 파일명 대신 UUID 기반 파일명으로 저장한다 — 파일명 충돌과 경로 조작(path traversal)을 막기 위함. 원본 파일명은 FileUploadResult에만 담아 반환하고, 실제 다운로드는 항상 storedFileName으로만 조회한다. store(file): file은 업로드할 파일(비어있으면 IllegalArgumentException), 반환값은 저장 결과(원본/저장 파일명, 크기). loadAsResource(storedFileName): storedFileName은 store()가 반환한 저장 파일명, 반환값은 다운로드용 Resource(파일이 없으면 IllegalArgumentException).",
+      "addedInCommit": "2eaa9e4",
+      "addedAt": "2026-09-10T15:20:35+09:00"
+    },
+    {
+      "type": "backend-module",
+      "name": "FileUploadResult",
+      "path": "common-repo/backend/FileUploadResult.java",
+      "purpose": "파일 업로드 결과로 반환되는 정보.",
+      "usage": [
+        "public FileUploadResult(String originalFileName, String storedFileName, long size)",
+        "public String getOriginalFileName()",
+        "public String getStoredFileName()"
+      ],
+      "detail": "파일 업로드 결과로 반환되는 정보. storedFileName은 다운로드 API(GET /api/files/{storedFileName}) 호출 시 그대로 사용한다.",
+      "addedInCommit": "2eaa9e4",
+      "addedAt": "2026-09-10T15:20:35+09:00"
     }
   ]
 }

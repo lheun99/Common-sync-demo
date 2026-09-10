@@ -1,12 +1,31 @@
-// 탐색기 패널 웹페이지의 질문창이 부르는 작은 서버.
-// 브라우저 → 이 서버 → claude -p (MCP로 색인 조회) → 답변을 다시 브라우저로.
+// 공통 자산 탐색기 사이트 전체를 서빙하는 서버.
+// GET  /            → 탐색기 페이지 (정적 파일)
+// GET  /api/assets  → asset-index.json을 매번 새로 읽어서 반환 (트리가 항상 최신)
+// POST /ask         → claude -p (MCP로 색인 조회) 호출 → 답변 반환
 import http from "http";
 import { spawn } from "child_process";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 8787;
+const PUBLIC_DIR = path.join(__dirname, "public");
+const INDEX_PATH = path.join(__dirname, "..", "asset-index.json");
+
+function loadAssetsWithSource() {
+  const { assets } = JSON.parse(fs.readFileSync(INDEX_PATH, "utf-8"));
+  return assets.map((a) => {
+    const sourcePath = path.join(__dirname, "..", "..", a.path);
+    let source;
+    try {
+      source = fs.readFileSync(sourcePath, "utf-8");
+    } catch {
+      source = "(소스 파일을 찾을 수 없습니다: " + a.path + ")";
+    }
+    return { ...a, source };
+  });
+}
 
 const ANSWER_SCHEMA = JSON.stringify({
   type: "object",
@@ -70,6 +89,25 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.method === "GET" && (req.url === "/" || req.url === "/index.html")) {
+    const html = fs.readFileSync(path.join(PUBLIC_DIR, "index.html"), "utf-8");
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(html);
+    return;
+  }
+
+  if (req.method === "GET" && req.url === "/api/assets") {
+    try {
+      const assets = loadAssetsWithSource();
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify(assets));
+    } catch (err) {
+      res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ error: String(err.message || err) }));
+    }
+    return;
+  }
+
   if (req.method === "POST" && req.url === "/ask") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -100,5 +138,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`질문 서버가 떴어요: http://localhost:${PORT} (탐색기 패널에서 이 서버를 불러요)`);
+  console.log(`공통 자산 탐색기 서버가 떴어요: http://localhost:${PORT}`);
 });
