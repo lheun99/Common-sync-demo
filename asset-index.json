@@ -125,6 +125,36 @@
       "detail": "파일 업로드 결과로 반환되는 정보. storedFileName은 다운로드 API(GET /api/files/{storedFileName}) 호출 시 그대로 사용한다.",
       "addedInCommit": "2eaa9e4",
       "addedAt": "2026-09-10T15:20:35+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "Modal",
+      "path": "common-repo/components/Modal.tsx",
+      "purpose": "열림 여부·제목·닫기 콜백을 받아 오버레이 형태로 표시되는 모달 창 (AI 추론)",
+      "props": ["open", "title", "onClose", "children"],
+      "detail": null,
+      "addedInCommit": "477e742",
+      "addedAt": "2026-09-10T16:27:43+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "Select",
+      "path": "common-repo/components/Select.tsx",
+      "purpose": "옵션 목록 중 하나를 선택하는 드롭다운 (라벨/에러 메시지 포함) (AI 추론)",
+      "props": ["label", "value", "options", "errorMessage", "onChange"],
+      "detail": null,
+      "addedInCommit": "477e742",
+      "addedAt": "2026-09-10T16:27:43+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "FileUpload",
+      "path": "common-repo/components/FileUpload.tsx",
+      "purpose": "파일을 선택해 업로드하는 필드 (라벨/허용 확장자/에러 메시지 포함) (AI 추론)",
+      "props": ["label", "accept", "errorMessage", "onChange"],
+      "detail": null,
+      "addedInCommit": "22453d6",
+      "addedAt": "2026-09-10T16:30:55+09:00"
     }
   ]
 }

@@ -8,3 +8,6 @@
 [2026-09-10T15:20:35+09:00] commit 2eaa9e4 → index에 FileController(backend-module) 추가함 (사람 개입 없음)
 [2026-09-10T15:20:35+09:00] commit 2eaa9e4 → index에 FileStorageService(backend-module) 추가함 (사람 개입 없음)
 [2026-09-10T15:20:35+09:00] commit 2eaa9e4 → index에 FileUploadResult(backend-module) 추가함 (사람 개입 없음)
+[2026-09-10T16:27:43+09:00] commit 477e742 → index에 Modal(frontend-component) 추가함 (사람 개입 없음)
+[2026-09-10T16:27:43+09:00] commit 477e742 → index에 Select(frontend-component) 추가함 (사람 개입 없음)
+[2026-09-10T16:30:55+09:00] commit 22453d6 → index에 FileUpload(frontend-component) 추가함 (사람 개입 없음)
