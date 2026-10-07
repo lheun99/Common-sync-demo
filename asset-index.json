@@ -175,6 +175,16 @@
       "detail": "체크박스 옆에 표시할 문구, 선택 여부, 선택 상태가 바뀔 때 호출 (바뀐 값 전달), 비활성화 여부 (기본 false), 필수 항목 표시 여부 (기본 false)",
       "addedInCommit": "3d09076",
       "addedAt": "2026-10-07T14:45:00+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "Alert",
+      "path": "common-repo/components/Alert.tsx",
+      "purpose": "알림 메시지 박스 (안내·성공·경고·오류 문구를 화면 상단이나 폼 위에 표시)",
+      "props": ["message", "variant", "title", "onClose"],
+      "detail": "사용 예: <Alert variant=\"error\" title=\"저장 실패\" message=\"잠시 후 다시 시도해 주세요.\" onClose={hideAlert} />. 주의: onClose 를 넘기지 않으면 닫기 버튼이 표시되지 않는다. props — message: 본문 문구, variant: 알림 종류 (기본 info, info/success/warning/error), title: 굵게 표시할 제목 (선택), onClose: 닫기 버튼을 눌렀을 때 호출",
+      "addedInCommit": "6d45237",
+      "addedAt": "2026-10-07T15:40:53+09:00"
     }
   ]
 }
