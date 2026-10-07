@@ -155,6 +155,16 @@
       "detail": null,
       "addedInCommit": "22453d6",
       "addedAt": "2026-09-10T16:30:55+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "Tooltip",
+      "path": "common-repo/components/Tooltip.tsx",
+      "purpose": "툴팁 (마우스를 올리면 설명 문구 표시)",
+      "props": ["text", "position", "maxWidth", "children"],
+      "detail": "사용 예: <Tooltip text=\"삭제하면 복구할 수 없습니다\"><Button label=\"삭제\" variant=\"danger\" /></Tooltip>. 주의: text가 길면 maxWidth로 줄바꿈 폭을 지정한다. props — text: 표시할 설명 문구, position: 툴팁 위치(top/bottom/left/right, 기본 top), maxWidth: 줄바꿈 기준 최대 너비(px, 기본 240), children: 툴팁을 붙일 대상 요소.",
+      "addedInCommit": "272b65a",
+      "addedAt": "2026-10-07T14:38:45+09:00"
     }
   ]
 }
