@@ -1,6 +1,6 @@
 // 공통 자산 탐색기 사이트 전체를 서빙하는 서버.
 // GET  /            → 탐색기 페이지 (정적 파일)
-// GET  /api/assets  → asset-index.json을 매번 새로 읽어서 반환 (트리가 항상 최신)
+// GET  /api/assets  → common-repo/asset-index/asset-index.json을 매번 새로 읽어서 반환 (트리가 항상 최신)
 // POST /ask         → claude -p (MCP로 색인 조회) 호출 → 답변 반환
 import http from "http";
 import { spawn } from "child_process";
@@ -11,7 +11,9 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 8787;
 const PUBLIC_DIR = path.join(__dirname, "public");
-const INDEX_PATH = path.join(__dirname, "..", "asset-index.json");
+// 정리집은 common-repo 안에 있다 (ASSET_INDEX_PATH 환경변수로 바꿀 수 있음)
+const INDEX_PATH =
+  process.env.ASSET_INDEX_PATH || path.join(__dirname, "..", "..", "common-repo", "asset-index", "asset-index.json");
 
 function loadAssetsWithSource() {
   const { assets } = JSON.parse(fs.readFileSync(INDEX_PATH, "utf-8"));

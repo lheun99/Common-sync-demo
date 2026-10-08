@@ -154,7 +154,7 @@
     const detailHtml = a.detail
       ? `<div class="field">
           <div class="label">자세한 설명 (코드 주석에서 추출)</div>
-          <div class="meta" style="font-size:13px;color:var(--ink);line-height:1.7;">${escapeHtml(a.detail)}</div>
+          <div class="meta" style="font-size:13px;color:var(--ink);line-height:1.7;white-space:pre-wrap;">${escapeHtml(a.detail)}</div>
         </div>`
       : "";
 

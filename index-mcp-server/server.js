@@ -6,7 +6,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const INDEX_PATH = path.join(__dirname, "..", "asset-index.json");
+// 정리집은 common-repo 안에 있다 (ASSET_INDEX_PATH 환경변수로 바꿀 수 있음)
+const INDEX_PATH =
+  process.env.ASSET_INDEX_PATH || path.join(__dirname, "..", "..", "common-repo", "asset-index", "asset-index.json");
 
 function loadAssets() {
   const raw = fs.readFileSync(INDEX_PATH, "utf-8");
