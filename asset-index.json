@@ -5,7 +5,12 @@
       "name": "Button",
       "path": "common-repo/components/Button.tsx",
       "purpose": "버튼 (primary/secondary/danger)",
-      "props": ["label", "variant", "disabled", "onClick"],
+      "props": [
+        "label",
+        "variant",
+        "disabled",
+        "onClick"
+      ],
       "addedInCommit": "bfc1777",
       "addedAt": "baseline"
     },
@@ -14,7 +19,13 @@
       "name": "Input",
       "path": "common-repo/components/Input.tsx",
       "purpose": "텍스트 입력 (라벨/에러 메시지 포함)",
-      "props": ["label", "value", "placeholder", "errorMessage", "onChange"],
+      "props": [
+        "label",
+        "value",
+        "placeholder",
+        "errorMessage",
+        "onChange"
+      ],
       "addedInCommit": "bfc1777",
       "addedAt": "baseline"
     },
@@ -23,7 +34,11 @@
       "name": "Table",
       "path": "common-repo/components/Table.tsx",
       "purpose": "컬럼 정의 기반 데이터 테이블 (행 클릭 지원)",
-      "props": ["columns", "rows", "onRowClick"],
+      "props": [
+        "columns",
+        "rows",
+        "onRowClick"
+      ],
       "addedInCommit": "bfc1777",
       "addedAt": "baseline"
     },
@@ -32,7 +47,11 @@
       "name": "Pagination",
       "path": "common-repo/components/Pagination.tsx",
       "purpose": "목록 하단 페이지 넘기기",
-      "props": ["page", "totalPages", "onChange"],
+      "props": [
+        "page",
+        "totalPages",
+        "onChange"
+      ],
       "addedInCommit": "370478a",
       "addedAt": "2026-09-10T12:34:53+09:00"
     },
@@ -41,7 +60,14 @@
       "name": "Textarea",
       "path": "common-repo/components/Textarea.tsx",
       "purpose": "여러 줄 텍스트 입력 (라벨/에러 메시지 포함)",
-      "props": ["label", "value", "placeholder", "errorMessage", "rows", "onChange"],
+      "props": [
+        "label",
+        "value",
+        "placeholder",
+        "errorMessage",
+        "rows",
+        "onChange"
+      ],
       "addedInCommit": "6e09a43",
       "addedAt": "2026-09-10T12:45:50+09:00"
     },
@@ -131,7 +157,12 @@
       "name": "Modal",
       "path": "common-repo/components/Modal.tsx",
       "purpose": "열림 여부·제목·닫기 콜백을 받아 오버레이 형태로 표시되는 모달 창 (AI 추론)",
-      "props": ["open", "title", "onClose", "children"],
+      "props": [
+        "open",
+        "title",
+        "onClose",
+        "children"
+      ],
       "detail": null,
       "addedInCommit": "477e742",
       "addedAt": "2026-09-10T16:27:43+09:00"
@@ -141,7 +172,13 @@
       "name": "Select",
       "path": "common-repo/components/Select.tsx",
       "purpose": "옵션 목록 중 하나를 선택하는 드롭다운 (라벨/에러 메시지 포함) (AI 추론)",
-      "props": ["label", "value", "options", "errorMessage", "onChange"],
+      "props": [
+        "label",
+        "value",
+        "options",
+        "errorMessage",
+        "onChange"
+      ],
       "detail": null,
       "addedInCommit": "477e742",
       "addedAt": "2026-09-10T16:27:43+09:00"
@@ -151,7 +188,12 @@
       "name": "FileUpload",
       "path": "common-repo/components/FileUpload.tsx",
       "purpose": "파일을 선택해 업로드하는 필드 (라벨/허용 확장자/에러 메시지 포함) (AI 추론)",
-      "props": ["label", "accept", "errorMessage", "onChange"],
+      "props": [
+        "label",
+        "accept",
+        "errorMessage",
+        "onChange"
+      ],
       "detail": null,
       "addedInCommit": "22453d6",
       "addedAt": "2026-09-10T16:30:55+09:00"
@@ -161,7 +203,12 @@
       "name": "Tooltip",
       "path": "common-repo/components/Tooltip.tsx",
       "purpose": "툴팁 (마우스를 올리면 설명 문구 표시)",
-      "props": ["text", "position", "maxWidth", "children"],
+      "props": [
+        "text",
+        "position",
+        "maxWidth",
+        "children"
+      ],
       "detail": "사용 예: <Tooltip text=\"삭제하면 복구할 수 없습니다\"><Button label=\"삭제\" variant=\"danger\" /></Tooltip>. 주의: text 가 길면 maxWidth 로 줄바꿈 폭을 지정한다. props — text: 표시할 설명 문구, position: 툴팁 위치 (top/bottom/left/right, 기본 top), maxWidth: 줄바꿈 기준 최대 너비 (px, 기본 240), children: 툴팁을 붙일 대상 요소.",
       "addedInCommit": "272b65a",
       "addedAt": "2026-10-07T14:38:45+09:00"
@@ -171,7 +218,13 @@
       "name": "Checkbox",
       "path": "common-repo/components/Checkbox.tsx",
       "purpose": "체크박스 (라벨 클릭으로도 선택 가능)",
-      "props": ["label", "checked", "onChange", "disabled", "required"],
+      "props": [
+        "label",
+        "checked",
+        "onChange",
+        "disabled",
+        "required"
+      ],
       "detail": "체크박스 옆에 표시할 문구, 선택 여부, 선택 상태가 바뀔 때 호출 (바뀐 값 전달), 비활성화 여부 (기본 false), 필수 항목 표시 여부 (기본 false)",
       "addedInCommit": "3d09076",
       "addedAt": "2026-10-07T14:45:00+09:00"
@@ -181,10 +234,29 @@
       "name": "Alert",
       "path": "common-repo/components/Alert.tsx",
       "purpose": "알림 메시지 박스 (안내·성공·경고·오류 문구를 화면 상단이나 폼 위에 표시)",
-      "props": ["message", "variant", "title", "onClose"],
+      "props": [
+        "message",
+        "variant",
+        "title",
+        "onClose"
+      ],
       "detail": "사용 예: <Alert variant=\"error\" title=\"저장 실패\" message=\"잠시 후 다시 시도해 주세요.\" onClose={hideAlert} />. 주의: onClose 를 넘기지 않으면 닫기 버튼이 표시되지 않는다. props — message: 본문 문구, variant: 알림 종류 (기본 info, info/success/warning/error), title: 굵게 표시할 제목 (선택), onClose: 닫기 버튼을 눌렀을 때 호출",
       "addedInCommit": "6d45237",
       "addedAt": "2026-10-07T15:40:53+09:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "Spinner",
+      "path": "common-repo/components/Spinner.tsx",
+      "purpose": "로딩 스피너 (데이터를 불러오거나 저장하는 동안 진행 중임을 표시)",
+      "props": [
+        "size",
+        "label",
+        "overlay"
+      ],
+      "detail": "사용 예: <Spinner size=\"large\" label=\"목록을 불러오는 중...\" />. 주의: 버튼 안에 넣을 때는 size=\"small\"을 쓰고 label 은 생략한다. props — size: 스피너 크기 (기본 medium, small/medium/large), label: 스피너 옆에 표시할 안내 문구 (선택), overlay: true 면 화면 전체를 덮는 반투명 배경 위에 표시",
+      "addedInCommit": "48daac6",
+      "addedAt": "2026-10-08T00:00:00+09:00"
     }
   ]
 }
