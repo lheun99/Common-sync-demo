@@ -188,6 +188,16 @@
     },
     {
       "type": "frontend-component",
+      "name": "Tabs",
+      "path": "common-repo/components/Tabs.tsx",
+      "purpose": "탭 메뉴 (한 화면 안에서 여러 영역을 탭으로 전환)",
+      "props": ["items", "activeKey", "onChange", "fullWidth"],
+      "detail": "상세 화면처럼 정보가 많은 페이지에서 \"기본 정보 / 이력 / 첨부파일\"처럼 영역을 나눌 때 사용한다. 선택 상태는 부모가 관리한다 (activeKey + onChange). 탭 내용은 선택된 탭만 렌더링한다. 사용 예: <Tabs items={[{ key: \"info\", label: \"기본 정보\" }, { key: \"history\", label: \"이력\", badge: 3 }]} activeKey={tab} onChange={setTab} />. 주의: items 의 key 는 화면 안에서 중복되면 안 된다. 주의: disabled 탭은 클릭해도 onChange 가 호출되지 않는다. props — items: 탭 목록 (표시 순서대로), activeKey: 현재 선택된 탭의 key, onChange: 탭을 눌렀을 때 호출 (선택된 key 전달), fullWidth: 탭 바를 화면 너비에 꽉 채울지 여부 (기본 false)",
+      "addedInCommit": "5b7d5c3",
+      "addedAt": "2026-10-08T06:53:05+01:00"
+    },
+    {
+      "type": "frontend-component",
       "name": "Spinner",
       "path": "common-repo/components/Spinner.tsx",
       "purpose": "로딩 스피너 (데이터를 불러오거나 저장하는 동안 진행 중임을 표시)",
