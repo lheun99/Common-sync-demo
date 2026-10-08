@@ -162,6 +162,21 @@
       "path": "common-repo/components/Tooltip.tsx",
       "purpose": "툴팁 (마우스를 올리면 설명 문구 표시)",
       "props": ["text", "position", "maxWidth", "children"],
+    },
+    {
+      "type": "backend-module",
+      "name": "MaskingUtils",
+      "path": "common-repo/backend/MaskingUtils.java",
+      "purpose": "개인정보 마스킹 유틸 클래스.",
+      "usage": [
+        "public static String maskName(String name)",
+        "public static String maskPhone(String phone)",
+        "public static String maskEmail(String email)"
+      ],
+      "detail": "[설명]\n- 화면 표시나 로그 출력 시 이름·휴대폰 번호·이메일·주민등록번호가 그대로 노출되지 않도록 일부를 *로 가린다.\n- 마스킹 규칙은 개인정보 보호 지침 (2026-09 개정) 을 따른다.\n[사용 예]\n  String name = MaskingUtils.maskName(\"홍길동\");          // 홍*동\n  String phone = MaskingUtils.maskPhone(\"010-1234-5678\"); // 010-****-5678\n[주의]\n- 마스킹된 값은 원래 값으로 되돌릴 수 없다. DB 에는 반드시 원본 (암호화된 값) 을 저장하고, 마스킹은 출력 직전에만 한다.\n[메서드]\n- maskName(name): 이름의 가운데 글자를 가린다. 두 글자 이름은 마지막 글자를 가린다. name 이 null 이거나 비어 있으면 그대로 반환\n- maskPhone(phone): 휴대폰 번호의 가운데 자리를 가린다. 하이픈 (-) 이 포함된 휴대폰 번호 (예: 010-1234-5678). 하이픈으로 나눈 결과가 3 부분이 아닌 경우 IllegalArgumentException\n- maskEmail(email): 이메일 아이디의 앞 2 글자만 남기고 가린다. 도메인은 가리지 않는다. @가 없으면 그대로 반환\n- maskRrn(rrn): 주민등록번호 뒷자리를 첫 글자만 남기고 가린다. 단, 하이픈 없이 13 자리로 들어오면 앞 6 자리 뒤에 하이픈을 넣어 반환한다.",
+      "addedInCommit": "1f654be",
+      "addedAt": "2026-10-08T07:03:30+01:00"
+    }
       "detail": "사용 예: <Tooltip text=\"삭제하면 복구할 수 없습니다\"><Button label=\"삭제\" variant=\"danger\" /></Tooltip>. 주의: text 가 길면 maxWidth 로 줄바꿈 폭을 지정한다. props — text: 표시할 설명 문구, position: 툴팁 위치 (top/bottom/left/right, 기본 top), maxWidth: 줄바꿈 기준 최대 너비 (px, 기본 240), children: 툴팁을 붙일 대상 요소.",
       "addedInCommit": "272b65a",
       "addedAt": "2026-10-07T14:38:45+09:00"
