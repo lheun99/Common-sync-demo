@@ -48,8 +48,13 @@ server.tool(
       };
     }
 
+    const GRADE_LABEL = { breaking: "비호환", behavior: "동작 변경", compatible: "호환 추가", new: "신규", docs: "문서" };
     const summary = matches
-      .map((a) => `- [${a.type}] ${a.name}: ${a.purpose} (경로: ${a.path})`)
+      .map((a) => {
+        const last = a.history?.[a.history.length - 1];
+        const lastText = last ? `, 최근 변경: ${last.at} [${GRADE_LABEL[last.grade] ?? last.grade}] ${last.summary}` : "";
+        return `- [${a.type}] ${a.name}: ${a.purpose} (경로: ${a.path}${lastText})`;
+      })
       .join("\n");
 
     return {
@@ -65,7 +70,7 @@ server.tool(
 
 server.tool(
   "get_asset_detail",
-  "공통 자산 하나의 상세 정보(props 또는 usage, 경로, 추가된 커밋/시각)를 조회한다.",
+  "공통 자산 하나의 상세 정보(props 또는 usage, 경로, 추가된 커밋/시각, 변경 이력(history: 일시·등급·요약))를 조회한다.",
   {
     name: z.string().describe("자산 이름 (예: Pagination, ApiResponse)"),
   },

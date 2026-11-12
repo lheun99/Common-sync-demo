@@ -32,7 +32,17 @@
     padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--edge);font-size:13.5px;
     line-height:1.65;flex-shrink:0;max-height:180px;overflow-y:auto;
   }
-  .ask-answer.loading{color:var(--soft);font-style:italic;}
+  .ask-answer.loading{color:var(--soft);}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--edge);border-top-color:var(--accent);
+    border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;}
+  .ask-bar button .spinner{border-color:rgba(255,255,255,.4);border-top-color:#fff;margin-right:6px;}
+  .skeleton{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+  .skeleton span{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--edge) 25%,var(--bg) 50%,var(--edge) 75%);
+    background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  .skeleton span:nth-child(1){width:92%;} .skeleton span:nth-child(2){width:78%;} .skeleton span:nth-child(3){width:55%;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+  @media (prefers-reduced-motion: reduce){ .spinner,.skeleton span{animation-duration:3s;} }
   .ask-answer.error{color:#B34B2E;}
   .ask-answer .q{font-weight:700;margin-bottom:6px;}
   .main{display:flex;flex:1;min-height:0;}
@@ -51,6 +61,8 @@
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .dot.frontend-component{background:var(--fe);}
   .dot.backend-module{background:var(--be);}
+  .dot.frontend-feature{border:2px solid var(--fe);}
+  .dot.backend-feature{border:2px solid var(--be);}
   .name{font-weight:600;flex-shrink:0;}
   .purpose{color:var(--soft);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .detail{flex:1;padding:28px 32px;overflow-y:auto;}
@@ -68,6 +80,30 @@
     padding:14px 16px;overflow-x:auto;font-family:'Consolas','Menlo',monospace;
     font-size:12.5px;line-height:1.6;white-space:pre;
   }
+  .sig-list{display:flex;flex-direction:column;gap:4px;}
+  .sig{background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:5px 10px;
+    font-family:'Consolas','Menlo',monospace;font-size:12px;overflow-x:auto;white-space:nowrap;}
+  .chip.link{cursor:pointer;}
+  .chip.link:hover{border-color:var(--accent);color:var(--accent);}
+  .doc{background:var(--panel);border:1px solid var(--edge);border-radius:10px;overflow:hidden;margin-bottom:20px;}
+  .doc-sec{padding:14px 18px;border-top:1px solid var(--edge);}
+  .doc-sec:first-child{border-top:none;}
+  .doc-sec h3{margin:0 0 8px;font-size:12px;font-weight:700;color:var(--soft);letter-spacing:.03em;}
+  .doc-sec.warn{background:color-mix(in srgb, #D9A21B 10%, var(--panel));}
+  .doc-sec.warn h3{color:#B07A00;}
+  .doc-sec ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.75;}
+  .doc-sec p{margin:0;font-size:13.5px;line-height:1.75;}
+  .doc-sec .code-block{background:var(--bg);margin:0;}
+  .kv{display:grid;grid-template-columns:minmax(90px,max-content) 1fr;gap:6px 16px;font-size:13.5px;line-height:1.65;}
+  .kv .k{font-family:'Consolas','Menlo',monospace;font-size:12.5px;color:var(--accent);font-weight:600;white-space:nowrap;}
+  @media (prefers-color-scheme: dark){ .doc-sec.warn h3{color:#E7C35A;} }
+  .history{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .history li{display:grid;grid-template-columns:max-content max-content 1fr;gap:10px;align-items:baseline;
+    background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:6px 10px;font-size:13px;}
+  .history .when{font-family:'Consolas','Menlo',monospace;font-size:12px;color:var(--soft);white-space:nowrap;}
+  .grade{border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;white-space:nowrap;color:#fff;}
+  .grade.breaking{background:#C0392B;} .grade.behavior{background:#B07A00;}
+  .grade.compatible{background:#1F8A5F;} .grade.new{background:#5C6B73;} .grade.docs{background:var(--edge);color:var(--ink);}
 </style>
 </head>
 <body>
@@ -91,8 +127,24 @@
   </div>
 
 <script>
-  const TYPE_LABEL = { "frontend-component": "프론트엔드 컴포넌트", "backend-module": "백엔드 모듈" };
+  const TYPE_LABEL = {
+    "frontend-component": "프론트엔드 컴포넌트",
+    "frontend-feature": "프론트엔드 기능",
+    "backend-module": "백엔드 모듈",
+    "backend-feature": "백엔드 기능",
+  };
+  // 트리에 그룹을 보여 주는 순서. 여기 없는 종류는 뒤에 붙는다.
+  const TYPE_ORDER = Object.keys(TYPE_LABEL);
+  const GRADE_LABEL = { breaking: "비호환", behavior: "동작 변경", compatible: "호환 추가", new: "신규", docs: "문서" };
   let assets = [];
+
+  // 커밋 시각(ISO 8601, 시간대 제각각)을 한국 시간 "YYYY-MM-DD HH:mm"으로 보여 준다.
+  function formatKst(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    const k = new Date(d.getTime() + 9 * 3600 * 1000).toISOString();
+    return `${k.slice(0, 10)} ${k.slice(11, 16)}`;
+  }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -109,7 +161,9 @@
     const grouped = {};
     assets.forEach((a) => (grouped[a.type] ??= []).push(a));
 
+    const rank = (t) => (TYPE_ORDER.includes(t) ? TYPE_ORDER.indexOf(t) : TYPE_ORDER.length);
     const html = Object.entries(grouped)
+      .sort(([a], [b]) => rank(a) - rank(b))
       .map(([type, items]) => {
         const rows = items
           .map(
@@ -146,36 +200,151 @@
     render(assets[idx]);
   }
 
-  function render(a) {
-    const listField = a.type === "frontend-component"
-      ? { label: "Props", items: a.props || [] }
-      : { label: "Usage", items: a.usage || [] };
+  // detail은 "[설명]\n- ...\n[사용 예]\n  코드..." 처럼 섹션으로 나뉜 문자열이다 (common-asset-sync 스킬의 detail 작성 형식).
+  // 섹션 머리가 하나도 없으면 예전 형식(문단 하나)으로 보고 null을 돌려준다.
+  function parseDetail(text) {
+    const sections = [];
+    let cur = null;
+    for (const line of text.split("\n")) {
+      const m = line.match(/^\[(.+?)\]\s*$/);
+      if (m) {
+        cur = { title: m[1], lines: [] };
+        sections.push(cur);
+      } else {
+        if (!cur) sections.push((cur = { title: null, lines: [] }));
+        cur.lines.push(line);
+      }
+    }
+    return sections.some((s) => s.title) ? sections : null;
+  }
 
-    const detailHtml = a.detail
+  // "- a" 로 시작하는 줄은 새 항목, 아닌 줄은 앞 항목에 이어 붙인다.
+  function toItems(lines) {
+    const items = [];
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      if (line.startsWith("- ") || !items.length) items.push(line.replace(/^- /, ""));
+      else items[items.length - 1] += " " + line;
+    }
+    return items;
+  }
+
+  const SECTION_LABEL = { props: "Props 상세" };
+
+  function renderSection(s) {
+    const title = s.title ? SECTION_LABEL[s.title] ?? s.title : "설명";
+    let body;
+    if (s.title === "사용 예") {
+      const code = s.lines.map((l) => l.replace(/^ {2}/, "")).join("\n").replace(/^\n+|\n+$/g, "");
+      body = `<div class="code-block">${escapeHtml(code)}</div>`;
+    } else if (s.title === "props" || s.title === "메서드") {
+      body = `<div class="kv">${toItems(s.lines)
+        .map((it) => {
+          const i = it.indexOf(": ");
+          return i < 0
+            ? `<div class="k"></div><div>${escapeHtml(it)}</div>`
+            : `<div class="k">${escapeHtml(it.slice(0, i))}</div><div>${escapeHtml(it.slice(i + 2))}</div>`;
+        })
+        .join("")}</div>`;
+    } else {
+      body = `<ul>${toItems(s.lines).map((it) => `<li>${escapeHtml(it)}</li>`).join("")}</ul>`;
+    }
+    return `<div class="doc-sec${s.title === "주의" ? " warn" : ""}"><h3>${escapeHtml(title)}</h3>${body}</div>`;
+  }
+
+  function renderDetail(detail) {
+    if (!detail) return "";
+    const sections = parseDetail(detail);
+    const inner = sections
+      ? sections.map(renderSection).join("")
+      : `<div class="doc-sec"><h3>설명</h3><p>${escapeHtml(detail)}</p></div>`;
+    return `<div class="doc">${inner}</div>`;
+  }
+
+  function chipList(items) {
+    return `<div class="chip-row">${items.map((p) => `<span class="chip">${escapeHtml(p)}</span>`).join("")}</div>`;
+  }
+
+  function sigList(items) {
+    return `<div class="sig-list">${items.map((p) => `<div class="sig">${escapeHtml(p)}</div>`).join("")}</div>`;
+  }
+
+  // 종류별로 보여 줄 필드. 파일 하나짜리는 Props/Usage를 늘 보여 주고(없으면 "없음"),
+  // 여러 파일로 된 기능(feature)은 정리집에 있는 필드만 보여 준다 (common-asset-sync 스킬의 필드 추출 규칙).
+  function fieldsHtml(a) {
+    const fields = [];
+    if (a.type === "frontend-component") fields.push(["Props", a.props || [], chipList, true]);
+    else if (a.type === "backend-module") fields.push(["Usage", a.usage || [], sigList, true]);
+    else {
+      fields.push(["Props", a.props || [], chipList, false]);
+      fields.push(["Usage", a.usage || [], sigList, false]);
+      fields.push(["API", a.api || [], sigList, false]);
+      fields.push(["구성 파일", a.files || [], sigList, false]);
+    }
+    return fields
+      .filter(([, items, , always]) => always || items.length)
+      .map(([label, items, list]) => `<div class="field">
+        <div class="label">${label}</div>
+        ${items.length ? list(items) : '<span class="meta">없음</span>'}
+      </div>`)
+      .join("");
+  }
+
+  function render(a) {
+    const related =(a.related || []).map((name) => ({ name, idx: assets.findIndex((x) => x.name === name) }));
+    const relatedHtml = related.length
       ? `<div class="field">
-          <div class="label">자세한 설명 (코드 주석에서 추출)</div>
-          <div class="meta" style="font-size:13px;color:var(--ink);line-height:1.7;white-space:pre-wrap;">${escapeHtml(a.detail)}</div>
+          <div class="label">함께 쓰는 공통 자산</div>
+          <div class="chip-row">${related
+            .map((r) => (r.idx >= 0
+              ? `<span class="chip link" data-idx="${r.idx}">${escapeHtml(r.name)} →</span>`
+              : `<span class="chip">${escapeHtml(r.name)}</span>`))
+            .join("")}</div>
         </div>`
       : "";
 
-    document.getElementById("detail").innerHTML = `
-      <h1>${a.name}</h1>
-      <div class="path">${a.path}</div>
-      <div class="purpose-full">${a.purpose}</div>
+    const history = (a.history || []).slice().reverse();
+    const historyHtml = history.length
+      ? `<div class="field">
+          <div class="label">변경 이력</div>
+          <ul class="history">${history
+            .map((h) => `<li>
+              <span class="when">${escapeHtml(formatKst(h.at))} · ${escapeHtml(h.commit)}</span>
+              <span class="grade ${escapeHtml(h.grade)}">${escapeHtml(GRADE_LABEL[h.grade] ?? h.grade)}</span>
+              <span>${escapeHtml(h.summary)}</span>
+            </li>`)
+            .join("")}</ul>
+        </div>`
+      : "";
+
+    const updated = a.updatedInCommit
+      ? `<div class="meta">수정 ${escapeHtml(a.updatedInCommit)} · ${escapeHtml(a.updatedAt)}</div>`
+      : "";
+
+    const detailEl = document.getElementById("detail");
+    detailEl.innerHTML = `
+      <h1>${escapeHtml(a.name)}</h1>
+      <div class="path">${escapeHtml(a.path)}</div>
+      <div class="purpose-full">${escapeHtml(a.purpose)}</div>
+      ${renderDetail(a.detail)}
+      ${fieldsHtml(a)}
+      ${relatedHtml}
+      ${historyHtml}
       <div class="field">
-        <div class="label">${listField.label}</div>
-        <div class="chip-row">${listField.items.map((p) => `<span class="chip">${p}</span>`).join("") || '<span class="meta">없음</span>'}</div>
+        <div class="label">커밋</div>
+        <div class="meta">추가 ${escapeHtml(a.addedInCommit)} · ${escapeHtml(a.addedAt)}</div>
+        ${updated}
       </div>
-      ${detailHtml}
       <div class="field">
-        <div class="label">추가된 커밋</div>
-        <div class="meta">${a.addedInCommit} · ${a.addedAt}</div>
-      </div>
-      <div class="field">
-        <div class="label">소스 코드</div>
+        <div class="label">${a.files ? "소스 코드 (시작 파일)" : "소스 코드"}</div>
         <div class="code-block">${escapeHtml(a.source)}</div>
       </div>
     `;
+    detailEl.scrollTop = 0;
+    detailEl.querySelectorAll(".chip.link").forEach((chip) => {
+      chip.addEventListener("click", () => selectAsset(Number(chip.dataset.idx)));
+    });
   }
 
   document.getElementById("refresh-btn").addEventListener("click", loadAssets);
@@ -190,8 +359,10 @@
 
     askAnswer.hidden = false;
     askAnswer.className = "ask-answer loading";
-    askAnswer.innerHTML = `<div class="q">Q. ${escapeHtml(question)}</div>AI가 색인을 확인하는 중... (수십 초 걸릴 수 있어요)`;
+    askAnswer.innerHTML = `<div class="q">Q. ${escapeHtml(question)}</div>
+      <div class="skeleton" role="status" aria-label="검색 중"><span></span><span></span><span></span></div>`;
     askBtn.disabled = true;
+    askBtn.innerHTML = '<span class="spinner"></span>검색 중';
 
     try {
       const res = await fetch("/ask", {
@@ -230,6 +401,7 @@
       askAnswer.innerHTML = `<div class="q">Q. ${escapeHtml(question)}</div>질문 서버 응답에 문제가 있어요. (${escapeHtml(err.message)})`;
     } finally {
       askBtn.disabled = false;
+      askBtn.textContent = "검색";
     }
   }
 
