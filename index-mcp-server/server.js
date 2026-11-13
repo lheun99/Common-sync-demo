@@ -48,7 +48,7 @@ server.tool(
       };
     }
 
-    const GRADE_LABEL = { breaking: "비호환", behavior: "동작 변경", compatible: "호환 추가", new: "신규", docs: "문서" };
+    const GRADE_LABEL = { breaking: "수정 필요", behavior: "확인 필요", compatible: "기능 추가", new: "신규", docs: "내부 변경" };
     const summary = matches
       .map((a) => {
         const last = a.history?.[a.history.length - 1];
