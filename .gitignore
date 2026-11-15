@@ -3,3 +3,44 @@ node_modules/
 # 로컬 도구가 생성하는 작업 폴더 (IntelliCEN, CodeGraph)
 .intellicen/
 .codegraph/
+
+# ===== Added by cleanup =====
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service-account*.json
+
+# --- OS / editor / tool local files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.iml
+*.swp
+*.log
+*.tmp
+.claude/settings.local.json
+.claude/worktrees/
+.worktrees/
+
+# --- Node ---
+.next/
+.nuxt/
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+.vercel/
+.turbo/
+npm-debug.log*
+yarn-error.log*
